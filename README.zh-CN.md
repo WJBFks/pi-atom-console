@@ -26,6 +26,15 @@
 
 ## 快速开始
 
+npm 包名为 `@wjbfks/pi-web-space`（首次发布准备中）。发布后可使用：
+
+```bash
+npm install -g @wjbfks/pi-web-space
+pws
+# Equivalent alias / 等效别名
+pi-web-space
+```
+
 需要 Node.js 22.19.0 或更高版本。从本仓库源码运行：
 
 ```bash

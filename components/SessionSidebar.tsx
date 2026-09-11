@@ -489,7 +489,7 @@ export function SessionSidebar({ selectedSessionId, onSelectSession, onNewSessio
     try {
       const saved: unknown = JSON.parse(localStorage.getItem("pi-web:workspace-names") ?? "{}");
       if (saved && typeof saved === "object" && !Array.isArray(saved)) {
-        setWorkspaceNames(Object.fromEntries(Object.entries(saved).filter(([, value]) => typeof value === "string")));
+        setWorkspaceNames(Object.fromEntries(Object.entries(saved).filter((entry): entry is [string, string] => typeof entry[1] === "string")));
       }
     } catch { /* Use directory names when local storage is unavailable. */ }
   }, []);
@@ -551,7 +551,7 @@ export function SessionSidebar({ selectedSessionId, onSelectSession, onNewSessio
     let ids: Record<string, string> = {};
     try {
       const saved = JSON.parse(localStorage.getItem("pi-web:workspace-ids") ?? "{}");
-      if (saved && typeof saved === "object" && !Array.isArray(saved)) ids = Object.fromEntries(Object.entries(saved).filter(([, value]) => typeof value === "string"));
+      if (saved && typeof saved === "object" && !Array.isArray(saved)) ids = Object.fromEntries(Object.entries(saved).filter((entry): entry is [string, string] => typeof entry[1] === "string"));
     } catch { /* Generate missing identities below. */ }
     for (const root of roots) {
       if (!ids[root]) ids[root] = typeof crypto.randomUUID === "function" ? crypto.randomUUID() : `${Date.now().toString(16)}${Math.random().toString(16).slice(2)}`;

@@ -26,6 +26,15 @@ Local browser UI for the [pi coding agent](https://github.com/earendil-works/pi)
 
 ## Quick Start
 
+The npm package is prepared as `@wjbfks/pi-web-space` (first publication pending). Once published:
+
+```bash
+npm install -g @wjbfks/pi-web-space
+pws
+# Equivalent alias / 等效别名
+pi-web-space
+```
+
 Requires Node.js 22.19.0 or newer. Run this fork from source:
 
 ```bash

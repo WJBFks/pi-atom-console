@@ -1,6 +1,6 @@
 {
-  "name": "@agegr/pi-web",
-  "version": "0.9.0",
+  "name": "@wjbfks/pi-web-space",
+  "version": "0.1.9",
   "description": "Pi Web Space — a browser workspace for the pi coding agent",
   "homepage": "https://github.com/WJBFks/pi-web-space#readme",
   "repository": {
@@ -23,10 +23,16 @@
     ".next",
     "!.next/cache",
     "!.next/dev",
+    "!.next/diagnostics",
+    "!.next/types",
+    "!.next/trace",
+    "!.next/trace-build",
     "!.next/**/*.js.map",
     "public",
     "next.config.ts",
-    "package.json"
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE"
   ],
   "scripts": {
     "postinstall": "node bin/prepare-terminal.js",
@@ -39,7 +45,8 @@
     "test:terminal": "node e2e/terminal.mjs",
     "test:e2e": "node e2e/run.mjs",
     "test": "node --experimental-strip-types --test \"app/**/*.test.mjs\" \"components/**/*.test.mjs\" \"hooks/**/*.test.mjs\" \"lib/**/*.test.mjs\" \"public/**/*.test.mjs\"",
-    "release": "npm version patch --no-git-tag-version && npm run build && npm publish --access public"
+    "prepack": "node bin/verify-package.js",
+    "release:check": "node bin/verify-package.js"
   },
   "dependencies": {
     "@earendil-works/pi-agent-core": "0.85.1",
@@ -87,5 +94,9 @@
     "remark-math": "^6.0.0",
     "tailwindcss": "^4.2.2",
     "typescript": "^5"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }
