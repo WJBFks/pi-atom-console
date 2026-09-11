@@ -37,14 +37,18 @@ npm run dev
 
 打开 [http://127.0.0.1:42141](http://127.0.0.1:42141)。
 
-在**设置 → 模型**中配置 Provider。上游 npm 包 `@agegr/pi-web` 不包含本分支改动；现有 CLI 名称、环境变量和存储键保留，以兼容已有配置。
+在**设置 → 模型**中配置 Provider。上游 npm 包 `@agegr/pi-web` 不包含本分支改动；现有环境变量和存储键保留，以兼容已有配置。
 
 ## 配置
 
-以下启动参数适用于已构建源码的启动器（`node bin/pi-web.js`）。开发模式端口为 **42141**；`npm run dev:lan` 用于局域网访问。
+主命令为 `pws`，`pi-web-space` 是参数完全相同的别名。在本仓库执行 `npm link` 可注册这两个命令。CLI 启动服务需要生产构建产物；开发时继续使用 `npm run dev`。
 
 
-端口和主机名以命令行参数为准，优先于对应的环境变量。`--no-open` 与 `PI_WEB_NO_OPEN=1` 中任意一个都会关闭自动打开浏览器。运行 `node bin/pi-web.js --help`（或 `-h`）可打印启动选项并以退出码 0 结束，不会启动服务；未知参数会报错并以退出码 1 结束。
+
+以下启动参数适用于已构建源码的启动器（`pws`）。开发模式端口为 **42141**；`npm run dev:lan` 用于局域网访问。
+
+
+端口和主机名以命令行参数为准，优先于对应的环境变量。`--no-open` 与 `PI_WEB_NO_OPEN=1` 中任意一个都会关闭自动打开浏览器。运行 `pws --help`（或 `-h`）可打印启动选项并以退出码 0 结束，不会启动服务；未知参数会报错并以退出码 1 结束。
 
 | 参数或环境变量 | 用途 | 默认值 |
 | --- | --- | --- |
@@ -58,8 +62,8 @@ npm run dev
 例如：
 
 ```bash
-node bin/pi-web.js --help
-node bin/pi-web.js -p 8080 -H 0.0.0.0 --no-open
+pws --help
+pws -p 8080 -H 0.0.0.0 --no-open
 ```
 
 ### 远程访问
@@ -67,7 +71,7 @@ node bin/pi-web.js -p 8080 -H 0.0.0.0 --no-open
 监听非回环地址会暴露一个可执行高权限操作的智能体。在可信局域网中使用时，请设置足够长的随机密码：
 
 ```bash
-PI_WEB_PASSWORD='足够长的随机密码' node bin/pi-web.js --hostname 0.0.0.0
+PI_WEB_PASSWORD='足够长的随机密码' pws --hostname 0.0.0.0
 ```
 
 密码认证不会加密连接。不要通过明文 HTTP 将 Pi Web Space 暴露到互联网；远程访问应使用可信反向代理提供 HTTPS，或通过可信 VPN。如果反向代理传递外部主机名，请把该名称精确加入 `PI_WEB_ALLOWED_HOSTS`。这个白名单不会改变 Pi Web Space 的监听地址。

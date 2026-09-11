@@ -30,7 +30,8 @@ function normalizePort(value) {
 }
 
 function getHelpText() {
-  return `Usage: pi-web [options]
+  return `Usage: pws [options]
+       pi-web-space [options]
 
 Start the Pi Web Space UI server.
 

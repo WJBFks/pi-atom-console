@@ -37,14 +37,18 @@ npm run dev
 
 Open [http://127.0.0.1:42141](http://127.0.0.1:42141).
 
-Configure your provider in **Settings → Models**. The upstream npm package `@agegr/pi-web` does not install this fork. Existing CLI names, environment variables and storage keys are retained for compatibility.
+Configure your provider in **Settings → Models**. The upstream npm package `@agegr/pi-web` does not install this fork. Environment variables and storage keys are retained for compatibility.
 
 ## Configuration
 
-The options below apply to the built checkout launcher (`node bin/pi-web.js`). Development uses port **42141**; `npm run dev:lan` enables LAN access.
+The primary command is `pws`; `pi-web-space` is an alias with identical options. Run `npm link` in this checkout to register both commands. Starting the server through the CLI requires a production build; keep using `npm run dev` during development.
 
 
-For port and hostname, command-line options override the corresponding environment variables. Either `--no-open` or `PI_WEB_NO_OPEN=1` disables automatic browser opening. Run `node bin/pi-web.js --help` (or `-h`) to print startup options and exit without starting the server. Unknown options exit with an error.
+
+The options below apply to the built checkout launcher (`pws`). Development uses port **42141**; `npm run dev:lan` enables LAN access.
+
+
+For port and hostname, command-line options override the corresponding environment variables. Either `--no-open` or `PI_WEB_NO_OPEN=1` disables automatic browser opening. Run `pws --help` (or `-h`) to print startup options and exit without starting the server. Unknown options exit with an error.
 
 | Option or environment variable | Purpose | Default |
 | --- | --- | --- |
@@ -60,8 +64,8 @@ For port and hostname, command-line options override the corresponding environme
 For example:
 
 ```bash
-node bin/pi-web.js --help
-node bin/pi-web.js -p 8080 -H 0.0.0.0 --no-open
+pws --help
+pws -p 8080 -H 0.0.0.0 --no-open
 ```
 
 ### Remote Access
@@ -69,7 +73,7 @@ node bin/pi-web.js -p 8080 -H 0.0.0.0 --no-open
 Binding to a non-loopback address exposes an agent that can execute high-privilege actions. On a trusted LAN, require a long random password:
 
 ```bash
-PI_WEB_PASSWORD='a-long-random-password' node bin/pi-web.js --hostname 0.0.0.0
+PI_WEB_PASSWORD='a-long-random-password' pws --hostname 0.0.0.0
 ```
 
 Password authentication does not encrypt the connection. Do not expose Pi Web Space over plain HTTP to the internet; use HTTPS through a trusted reverse proxy or a trusted VPN. If a reverse proxy sends an external hostname, add that exact name to `PI_WEB_ALLOWED_HOSTS`. This allow-list does not change the address Pi Web Space binds to.
