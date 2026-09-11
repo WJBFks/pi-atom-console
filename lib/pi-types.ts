@@ -39,6 +39,7 @@ export interface NavigateTreeResult {
 }
 
 export interface SessionStatsInfo {
+  traceSteps?: number;
   sessionFile?: string;
   sessionId: string;
   sessionName?: string;

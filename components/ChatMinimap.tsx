@@ -20,7 +20,7 @@ interface Props {
   onRevealHistory: () => void;
 }
 
-const MINIMAP_WIDTH = 36;
+const MINIMAP_WIDTH = 20;
 const MAX_NODE_GAP = 50;
 const MINIMAP_PADDING = 12;
 const PREVIEW_HIDE_DELAY = 250;
@@ -617,8 +617,7 @@ export function ChatMinimap({
         position: "relative",
         cursor: "pointer",
         userSelect: "none",
-        borderLeft: "1px solid var(--border)",
-        background: "var(--bg-panel)",
+        background: "var(--bg)",
         overflow: "visible",
       }}
     >

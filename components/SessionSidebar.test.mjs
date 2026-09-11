@@ -4,7 +4,7 @@ import test from "node:test";
 import { createJiti } from "jiti";
 
 const jiti = createJiti(import.meta.url, { jsx: { runtime: "automatic" }, tsconfigPaths: true });
-const { getSessionListIndices } = await jiti.import("./SessionSidebar.tsx");
+const { getSessionListIndices, getProjectTreeIndices } = await jiti.import("./SessionSidebar.tsx");
 
 const source = await readFile(new URL("./SessionSidebar.tsx", import.meta.url), "utf8");
 const sessionItemSource = source.slice(source.indexOf("function SessionItem("));
@@ -123,8 +123,23 @@ test("does not expose disk-backed actions for transient sessions", () => {
 });
 
 test("hides subagent rows and aggregates their state into the main session row", () => {
-  assert.match(source, /const sessionFamilies = listSessionFamilies\(filteredSessions\)/);
+  assert.match(source, /listSessionFamilies\(sessionsForProject\(allSessions, project\.key\)\)/);
   assert.match(source, /familySessions\.some\(\(session\) => session\.id === selectedSessionId\)/);
   assert.match(source, /familySessions\.some\(\(session\) => runningSessionIds\.has\(session\.id\)\)/);
   assert.doesNotMatch(source, /function SessionTreeItem/);
+});
+
+
+test("project tree windows mixed row heights and clamps after collapse", () => {
+  const rows = Array.from({ length: 200 }, (_, index) => ({ height: index % 5 === 0 ? 36 : 54 }));
+  const visible = getProjectTreeIndices(rows, 800, 300, 190);
+  let offset = 0;
+  rows.forEach((row, index) => {
+    if (offset < 1100 && offset + row.height > 800) assert.ok(visible.includes(index));
+    offset += row.height;
+  });
+  assert.ok(visible.includes(190));
+  assert.ok(visible.length < 30);
+  assert.deepEqual(getProjectTreeIndices(rows.slice(0, 3), 9000, 300), [0, 1, 2]);
+  assert.deepEqual(getProjectTreeIndices([], 9000, 300), []);
 });

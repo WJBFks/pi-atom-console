@@ -995,6 +995,7 @@ export const FileExplorer = forwardRef<FileExplorerHandle, Props>(function FileE
       </div>
       )}
 
+      {!changesCollapsed && gitFiles.length === 0 && <div style={{ padding: 16, fontSize: 12, color: "var(--text-dim)" }}>暂无变更文件</div>}
       {!changesCollapsed && gitFiles.length > 0 && (
         <div style={{ padding: "0 4px 2px" }}>
           <div
@@ -1017,7 +1018,7 @@ export const FileExplorer = forwardRef<FileExplorerHandle, Props>(function FileE
         </div>
       )}
 
-      {(changesCollapsed || gitFiles.length === 0) && (!fileSearchOpen || !hasSearchQuery) && (
+      {changesCollapsed && (!fileSearchOpen || !hasSearchQuery) && (
         <div style={{ padding: "2px 4px" }}>
           {loading ? (
             <div style={{ padding: "8px 12px", fontSize: 11, color: "var(--text-dim)" }}>Loading files...</div>

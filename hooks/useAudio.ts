@@ -23,9 +23,9 @@ function playTone(ctx: AudioContext) {
 
 export function useAudio() {
   const [enabled, setEnabled] = useState<boolean>(() => {
-    if (typeof window === "undefined") return true;
+    if (typeof window === "undefined") return false;
     const stored = localStorage.getItem("pi-sound-enabled");
-    return stored === null ? true : stored === "true";
+    return stored === "true";
   });
 
   const enabledRef = useRef(enabled);

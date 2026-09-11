@@ -450,6 +450,7 @@ export function useAgentSession(opts: UseAgentSessionOptions) {
     if (sessionStatsOverride) {
       return {
         ...sessionStatsOverride,
+        traceSteps: mergeSessionStats(data?.stats, data?.context.messages ?? [], messages).traceSteps,
         totalActiveMs: data?.totalActiveMs,
         ...(contextUsage ? { contextUsage } : {}),
       };

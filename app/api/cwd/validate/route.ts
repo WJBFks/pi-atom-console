@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { statSync, type Stats } from "fs";
+import { mkdirSync, statSync, type Stats } from "fs";
 import { homedir } from "os";
 import { isAbsolute, resolve } from "path";
 import { allowFileRoot } from "@/lib/file-access";
@@ -8,7 +8,7 @@ import { resolveProject } from "@/lib/worktree";
 
 function normalizeCwd(cwd: string): string {
   if (cwd === "~") return homedir();
-  if (cwd.startsWith("~/")) return resolve(homedir(), cwd.slice(2));
+  if (cwd.startsWith("~/") || cwd.startsWith("~\\")) return resolve(homedir(), cwd.slice(2));
   return isAbsolute(cwd) ? cwd : resolve(cwd);
 }
 
@@ -16,7 +16,7 @@ function normalizeCwd(cwd: string): string {
 // Validates a candidate workspace before the UI selects it.
 export async function POST(req: Request) {
   try {
-    const body = await req.json() as { cwd?: unknown };
+    const body = await req.json() as { cwd?: unknown; createIfMissing?: boolean };
     const cwd = typeof body.cwd === "string" ? body.cwd.trim() : "";
 
     if (!cwd) {
@@ -27,8 +27,14 @@ export async function POST(req: Request) {
     let stat: Stats;
     try {
       stat = statSync(normalizedCwd);
-    } catch {
-      return NextResponse.json({ error: `Directory does not exist: ${cwd}` }, { status: 400 });
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+      try {
+        mkdirSync(normalizedCwd, { recursive: true });
+        stat = statSync(normalizedCwd);
+      } catch (creationError) {
+        return NextResponse.json({ error: `Unable to create workspace directory: ${normalizedCwd}. ${String(creationError)}` }, { status: 400 });
+      }
     }
 
     if (!stat.isDirectory()) {

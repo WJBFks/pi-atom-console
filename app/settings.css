@@ -1218,3 +1218,302 @@
     }
   }
 }
+
+/* Settings navigation stays beside its content, including on narrow screens. */
+.settings-side-nav {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 164px;
+  align-items: stretch;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  padding: 12px 8px;
+  gap: 4px;
+  overflow: auto;
+  background: var(--bg-panel);
+  border-right: 1px solid var(--border);
+}
+.settings-side-nav .settings-section-tab {
+  flex: 0 0 36px;
+  width: 100%;
+  height: 36px;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 0 12px;
+  border-radius: 5px;
+  transition: background 120ms ease, color 120ms ease;
+}
+.settings-side-nav .settings-section-tab::after {
+  display: none;
+}
+.settings-side-nav .settings-section-tab[aria-current="page"] {
+  background: var(--bg-selected);
+  color: var(--accent);
+}
+.settings-side-nav .settings-section-tab:not(:disabled):hover {
+  background: color-mix(in srgb, var(--accent) 24%, var(--bg-panel));
+  color: var(--text);
+}
+.settings-side-nav .settings-section-tab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.settings-dialog-main .system-prompt-panel,
+.settings-dialog-main .tool-definitions-panel {
+  height: 100%;
+  min-height: 0;
+  border: none;
+  background: var(--bg);
+}
+@media (max-width: 600px) {
+  .settings-side-nav {
+    flex-basis: 104px;
+    padding: 8px 4px;
+  }
+  .settings-side-nav .settings-section-tab {
+    gap: 6px;
+    padding: 0 7px;
+  }
+}
+
+/* Keep settings regions on one plain surface. */
+.settings-dialog-surface {
+  --bg-panel: var(--bg);
+}
+.settings-side-nav {
+  border-right: none;
+}
+.settings-dialog-surface .config-scope-tag {
+  background: transparent;
+}
+
+/* One visual language for every embedded settings page. */
+.settings-dialog-surface {
+  width: 1040px;
+  border-radius: 22px;
+  font-size: 13px;
+  --bg-hover: color-mix(in srgb, var(--accent) 10%, var(--bg));
+  --bg-selected: color-mix(in srgb, var(--accent) 16%, var(--bg));
+}
+.settings-dialog-header {
+  min-height: 56px;
+  padding-left: 24px;
+  border-bottom: 0;
+}
+.settings-dialog-title { font-size: 14px; font-weight: 500; }
+.settings-dialog-close { top: 13px; right: 18px; }
+.settings-side-nav {
+  flex-basis: 176px;
+  padding: 4px 12px 20px;
+  gap: 4px;
+}
+.settings-side-nav .settings-section-tab {
+  height: 40px;
+  flex-basis: 40px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 400;
+}
+.settings-side-nav .settings-section-tab[aria-current="page"] {
+  color: var(--text);
+  font-weight: 500;
+}
+.settings-dialog-main {
+  flex-direction: column;
+  padding: 4px 24px 24px 16px;
+}
+.settings-page-title {
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0 0 18px;
+  font-size: 17px;
+  line-height: 26px;
+  font-weight: 600;
+  color: var(--text);
+}
+.settings-dialog-main .settings-section-host {
+  height: auto;
+  overflow: hidden;
+}
+.settings-dialog-main .settings-general {
+  max-width: none;
+  height: 100%;
+  padding: 0 8px 16px 0;
+}
+.settings-general-title { display: none; }
+.settings-general-section,
+.settings-general-section:first-of-type {
+  margin-top: 0;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border);
+}
+.settings-general-section:first-of-type { padding-top: 0; }
+.settings-general-section:last-child { border-bottom: 0; }
+.settings-general-heading {
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.settings-general-description { font-size: 12px; line-height: 1.6; }
+.settings-theme-options {
+  max-width: none;
+  gap: 8px;
+  padding: 0;
+}
+.settings-theme-option {
+  flex-direction: column;
+  gap: 8px;
+  min-height: 72px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  font-size: 13px;
+}
+.settings-theme-option:has(input:checked) {
+  border-color: var(--accent);
+  background: var(--bg-hover);
+  color: var(--text);
+  font-weight: 500;
+}
+.settings-chat-options,
+.settings-language-options,
+.settings-shell-option { max-width: none; }
+.settings-chat-options { gap: 0; }
+.settings-chat-option { padding: 14px 0; font-size: 13px; }
+.settings-chat-option + .settings-chat-option { border-top: 1px solid var(--border); }
+.settings-chat-range-header output {
+  padding: 6px 12px;
+  border-radius: 16px;
+  background: var(--bg-hover);
+}
+.settings-language-option { border-radius: 10px; }
+.settings-dialog-main .config-sidebar,
+.settings-dialog-main .tool-definitions-sidebar {
+  width: 200px;
+  border-right: 0;
+  background: transparent;
+}
+.settings-dialog-main .config-sidebar-list,
+.settings-dialog-main .tool-definitions-list { padding: 0 8px 8px 0; }
+.settings-dialog-main .config-sidebar-item,
+.settings-dialog-main .tool-definitions-item {
+  min-height: 36px;
+  height: auto;
+  padding: 9px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+.settings-dialog-main .config-sidebar-text { font-size: 13px; }
+.settings-dialog-main .config-sidebar-group-label {
+  padding: 8px 10px;
+  font-size: 11px;
+  font-weight: 500;
+}
+.settings-dialog-main .config-detail,
+.settings-dialog-main .tool-definition-scroll,
+.settings-dialog-main .system-prompt-scroll {
+  padding: 0 8px 16px 20px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.settings-dialog-main .config-detail-title { font-size: 15px; font-weight: 600; }
+.settings-dialog-main .config-section-title {
+  color: var(--text-muted);
+  font-size: 12px;
+  text-transform: none;
+  font-weight: 500;
+}
+.settings-dialog-main .config-detail-stack { gap: 20px; }
+.settings-dialog-main .config-field { gap: 8px; }
+.settings-dialog-main .config-button { border-radius: 16px; }
+.settings-dialog-main :is(input:not([type="range"]):not([type="checkbox"]):not([type="radio"]), select, textarea) {
+  border-radius: 10px;
+  font-family: inherit;
+}
+.settings-dialog-main .config-footer {
+  padding: 10px 0;
+  min-height: 48px;
+}
+.settings-dialog-main .agents-feature-setting,
+.settings-dialog-main .config-trust-notice {
+  padding: 12px 0;
+  margin-bottom: 14px;
+}
+@media (max-width: 600px) {
+  .settings-dialog-surface { border-radius: 16px; }
+  .settings-side-nav { flex-basis: 104px; padding: 4px; }
+  .settings-side-nav .settings-section-tab { padding: 0 7px; gap: 6px; font-size: 12px; }
+  .settings-dialog-main { padding: 4px 12px 12px; }
+  .settings-dialog-main .config-sidebar,
+  .settings-dialog-main .tool-definitions-sidebar { width: 100%; }
+  .settings-dialog-main .config-detail,
+  .settings-dialog-main .tool-definition-scroll { padding: 12px 0; }
+  .settings-theme-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.settings-chat-range-option input[type="range"] {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 5px;
+  margin: 12px 0 8px;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.settings-chat-range-option input[type="range"]::-webkit-slider-runnable-track {
+  height: 5px;
+  border-radius: 999px;
+  background: transparent;
+}
+.settings-chat-range-option input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  margin-top: -5px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.settings-chat-range-option input[type="range"]::-moz-range-track {
+  height: 5px;
+  border-radius: 999px;
+  background: transparent;
+}
+.settings-chat-range-option input[type="range"]::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.settings-chat-range-option input[type="range"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+}
+.settings-chat-range-option input[type="range"]:hover::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px var(--bg-selected);
+}
+.settings-chat-range-option input[type="range"]:hover::-moz-range-thumb {
+  box-shadow: 0 0 0 4px var(--bg-selected);
+}
+
+.models-provider-group {
+  margin: 8px 0 14px;
+}
+.models-provider-group > .config-sidebar-item .config-sidebar-text {
+  font-weight: 600;
+}
+.models-provider-children {
+  margin: 2px 0 0 17px;
+  padding-left: 10px;
+  border-left: 1px solid var(--border);
+}
+.settings-dialog-main .models-provider-children .models-sidebar-indented-item {
+  padding-left: 10px;
+}
+.models-provider-children .models-sidebar-add-item {
+  font-size: 12px;
+}

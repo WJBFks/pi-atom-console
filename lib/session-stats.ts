@@ -1,6 +1,7 @@
 import type { AgentMessage, AgentUsage, SessionEntry } from "./types";
 
 export interface SessionFileStats {
+  traceSteps?: number;
   userMessages: number;
   assistantMessages: number;
   toolCalls: number;
@@ -18,6 +19,7 @@ export interface SessionFileStats {
 
 function emptyStats(): SessionFileStats {
   return {
+    traceSteps: 1,
     userMessages: 0,
     assistantMessages: 0,
     toolCalls: 0,
@@ -38,6 +40,7 @@ function addUsage(stats: SessionFileStats, usage?: AgentUsage): void {
 }
 
 function addMessage(stats: SessionFileStats, message: AgentMessage): void {
+  stats.traceSteps = (stats.traceSteps ?? 1) + (message.role === "assistant" ? message.content.filter((block) => ["text", "thinking", "toolCall"].includes(block.type)).length + (message.errorMessage ? 1 : 0) : 1);
   stats.totalMessages += 1;
   if (message.role === "user") {
     stats.userMessages += 1;
@@ -85,6 +88,7 @@ export function mergeSessionStats(
   };
   tokens.total = tokens.input + tokens.output + tokens.cacheRead + tokens.cacheWrite;
   return {
+    traceSteps: (fileStats.traceSteps ?? 1) + delta(current.traceSteps ?? 1, loaded.traceSteps ?? 1),
     userMessages: fileStats.userMessages + delta(current.userMessages, loaded.userMessages),
     assistantMessages: fileStats.assistantMessages + delta(current.assistantMessages, loaded.assistantMessages),
     toolCalls: fileStats.toolCalls + delta(current.toolCalls, loaded.toolCalls),
@@ -112,9 +116,11 @@ export function computeSessionStats(entries: SessionEntry[]): SessionFileStats {
 
   for (const entry of entries) {
     if (entry.type === "compaction" || entry.type === "branch_summary") {
+      stats.traceSteps = (stats.traceSteps ?? 1) + 1;
       addUsage(stats, entry.usage);
       continue;
     }
+    if (entry.type === "custom_message") stats.traceSteps = (stats.traceSteps ?? 1) + 1;
     if (entry.type !== "message") continue;
     addMessage(stats, entry.message);
   }

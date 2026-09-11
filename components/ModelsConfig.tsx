@@ -2075,7 +2075,7 @@ export function ModelsConfig({ onClose, embedded = false }: { onClose: () => voi
                 const isProviderSelected = selection?.type === "provider" && selection.name === pName;
                 const models = pData.models ?? [];
                 return (
-                  <div key={pName} style={{ marginBottom: 2 }}>
+                  <div key={pName} className="models-provider-group">
                     {/* Provider row */}
                     <ConfigSidebarItem
                       onClick={() => setSelection({ type: "provider", name: pName })}
@@ -2093,6 +2093,7 @@ export function ModelsConfig({ onClose, embedded = false }: { onClose: () => voi
                       </ConfigSidebarText>
                     </ConfigSidebarItem>
 
+                    <div className="models-provider-children">
                     {/* Model rows */}
                     {models.map((m, i) => {
                       const isModelSelected = selection?.type === "model" && selection.providerName === pName && selection.index === i;
@@ -2120,6 +2121,7 @@ export function ModelsConfig({ onClose, embedded = false }: { onClose: () => voi
                     >
                        <ConfigSidebarText>+ {t("i18n.model")}</ConfigSidebarText>
                     </ConfigSidebarItem>
+                    </div>
                   </div>
                 );
               })}

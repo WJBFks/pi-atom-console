@@ -1,12 +1,19 @@
-# Pi Web
+# Pi Web Space
+
+基于 [agegr/pi-web](https://github.com/agegr/pi-web) 的工作空间增强分支，保留上游来源和 MIT 许可证。
 
 [English](./README.md) | [日本語](./README.ja.md) | [Русский](./README.ru.md)
 
-[pi 编程智能体](https://github.com/earendil-works/pi)的本地浏览器界面。Pi Web 与 pi 共用本机配置和会话文件，可在浏览器中查找和继续对话、运行智能体、配置模型与资源，并查看项目文件。
+[pi 编程智能体](https://github.com/earendil-works/pi)的本地浏览器界面。Pi Web Space 与 pi 共用本机配置和会话文件，可在浏览器中查找和继续对话、运行智能体、配置模型与资源，并查看项目文件。
 
-中文微信群：请查看 [GitHub Discussions 帖子](https://github.com/agegr/pi-web/discussions/271)。
 
-![Pi Web 展示包含结构化 Markdown、工具调用和项目导航的 pi 会话](https://raw.githubusercontent.com/agegr/pi-web/main/docs/screenshot2.png)
+## 本分支新增
+
+- 工作区与临时会话选择、可配置的临时目录、支持逐项复制的工作区及会话信息卡片。
+- 对话、轨迹、上下文视图；可拖动调整的聊天宽度、文件预览和底部终端。
+- 会话轮数、轨迹步数、Token 用量、缓存命中率、成本及平均输出速度估算。`tok/s` 的活跃时长包含工具执行和等待时间，不代表模型纯解码速度。
+- 工作区命名、归档及外观偏好保存在当前浏览器，不跨设备同步。
+- 设置 → 关于提供本仓库链接；建立独立发布流程前隐藏上游更新提示。
 
 ## 功能
 
@@ -14,33 +21,30 @@
 - **两种分支方式**：**新会话**会从较早的消息创建独立会话文件；**从此处编辑**会在当前会话内创建分支。
 - **项目文件工具**：浏览和上传文件、查看 Git Diff，并预览源码、Markdown、图片、音频、PDF 和 DOCX；文件变化后会自动刷新。
 - **Git worktree**：从侧边栏切换 checkout，同时把同一仓库不同 worktree 的会话归在一起。
-- **网页配置**：无需离开 Pi Web，即可管理 Provider 登录和 API Key、模型、模型测试、插件包及技能。
-- **英文、简体中文和繁体中文界面**：Pi Web 首次打开时跟随浏览器语言，也可从顶部栏切换语言。
+- **网页配置**：无需离开 Pi Web Space，即可管理 Provider 登录和 API Key、模型、模型测试、插件包及技能。
+- **英文、简体中文和繁体中文界面**：Pi Web Space 首次打开时跟随浏览器语言，也可从顶部栏切换语言。
 
 ## 快速开始
 
-Pi Web 要求 Node.js 22.19.0 或更高版本。先用 `node --version` 检查版本，然后运行：
+需要 Node.js 22.19.0 或更高版本。从本仓库源码运行：
 
 ```bash
-npx @agegr/pi-web@latest
+git clone https://github.com/WJBFks/pi-web-space.git
+cd pi-web-space
+npm ci
+npm run dev
 ```
 
-服务就绪后，命令行会尝试自动打开浏览器。如果没有打开，请访问 [http://127.0.0.1:30141](http://127.0.0.1:30141)。Pi Web 默认仅监听 `127.0.0.1`。
+打开 [http://127.0.0.1:42141](http://127.0.0.1:42141)。
 
-如果尚未配置模型 Provider，请打开**模型（Models）**面板登录或添加 API Key。
-
-如需全局安装 `pi-web` 命令：
-
-```bash
-npm install -g @agegr/pi-web@latest
-pi-web
-```
-
-更新前先用 `Ctrl+C` 停止正在运行的进程，再次执行同一条安装命令。卸载时运行 `npm uninstall -g @agegr/pi-web`。
+在**设置 → 模型**中配置 Provider。上游 npm 包 `@agegr/pi-web` 不包含本分支改动；现有 CLI 名称、环境变量和存储键保留，以兼容已有配置。
 
 ## 配置
 
-端口和主机名以命令行参数为准，优先于对应的环境变量。`--no-open` 与 `PI_WEB_NO_OPEN=1` 中任意一个都会关闭自动打开浏览器。运行 `pi-web --help`（或 `-h`）可打印启动选项并以退出码 0 结束，不会启动服务；未知参数会报错并以退出码 1 结束。
+以下启动参数适用于已构建源码的启动器（`node bin/pi-web.js`）。开发模式端口为 **42141**；`npm run dev:lan` 用于局域网访问。
+
+
+端口和主机名以命令行参数为准，优先于对应的环境变量。`--no-open` 与 `PI_WEB_NO_OPEN=1` 中任意一个都会关闭自动打开浏览器。运行 `node bin/pi-web.js --help`（或 `-h`）可打印启动选项并以退出码 0 结束，不会启动服务；未知参数会报错并以退出码 1 结束。
 
 | 参数或环境变量 | 用途 | 默认值 |
 | --- | --- | --- |
@@ -54,8 +58,8 @@ pi-web
 例如：
 
 ```bash
-pi-web --help
-pi-web -p 8080 -H 0.0.0.0 --no-open
+node bin/pi-web.js --help
+node bin/pi-web.js -p 8080 -H 0.0.0.0 --no-open
 ```
 
 ### 远程访问
@@ -63,10 +67,10 @@ pi-web -p 8080 -H 0.0.0.0 --no-open
 监听非回环地址会暴露一个可执行高权限操作的智能体。在可信局域网中使用时，请设置足够长的随机密码：
 
 ```bash
-PI_WEB_PASSWORD='足够长的随机密码' pi-web --hostname 0.0.0.0
+PI_WEB_PASSWORD='足够长的随机密码' node bin/pi-web.js --hostname 0.0.0.0
 ```
 
-密码认证不会加密连接。不要通过明文 HTTP 将 Pi Web 暴露到互联网；远程访问应使用可信反向代理提供 HTTPS，或通过可信 VPN。如果反向代理传递外部主机名，请把该名称精确加入 `PI_WEB_ALLOWED_HOSTS`。这个白名单不会改变 Pi Web 的监听地址。
+密码认证不会加密连接。不要通过明文 HTTP 将 Pi Web Space 暴露到互联网；远程访问应使用可信反向代理提供 HTTPS，或通过可信 VPN。如果反向代理传递外部主机名，请把该名称精确加入 `PI_WEB_ALLOWED_HOSTS`。这个白名单不会改变 Pi Web Space 的监听地址。
 
 ### HTTP 代理
 
@@ -78,7 +82,7 @@ macOS 或 Linux：
 HTTP_PROXY=http://127.0.0.1:7890 \
 HTTPS_PROXY=http://127.0.0.1:7890 \
 NO_PROXY=localhost,127.0.0.1 \
-npx @agegr/pi-web@latest
+npm run dev
 ```
 
 Windows PowerShell：
@@ -87,16 +91,16 @@ Windows PowerShell：
 $env:HTTP_PROXY = "http://127.0.0.1:7890"
 $env:HTTPS_PROXY = "http://127.0.0.1:7890"
 $env:NO_PROXY = "localhost,127.0.0.1"
-npx @agegr/pi-web@latest
+npm run dev
 ```
 
 ## 注意事项
 
-- **智能体数据**：Pi Web 默认读取 `~/.pi/agent` 下的 pi 数据，包括 `sessions/<编码后的工作目录>/<时间戳>_<uuid>.jsonl` 中的会话文件。可通过 `PI_CODING_AGENT_DIR` 指定其他 pi agent 目录。
-- **文件系统访问**：Pi Web 必须能读取智能体数据目录及会话记录中的工作目录。与现有 pi 会话共用数据时，请让 Pi Web 运行在与 pi 相同的文件系统环境中。
+- **智能体数据**：Pi Web Space 默认读取 `~/.pi/agent` 下的 pi 数据，包括 `sessions/<编码后的工作目录>/<时间戳>_<uuid>.jsonl` 中的会话文件。可通过 `PI_CODING_AGENT_DIR` 指定其他 pi agent 目录。
+- **文件系统访问**：Pi Web Space 必须能读取智能体数据目录及会话记录中的工作目录。与现有 pi 会话共用数据时，请让 Pi Web Space 运行在与 pi 相同的文件系统环境中。
 - **共享配置**：模型面板使用 pi 的模型、设置和凭据存储，因此两种界面都能看到相关更改。
-- **文件访问边界**：文件浏览器仅能访问在 Pi Web 中选择过的工作目录，以及它已识别的项目或会话根目录；它不是通用的文件系统浏览器。
-- **Git worktree**：切换器何时显示、如何创建 worktree，以及删除会产生什么影响，见 [Pi Web 里的 Worktree](./docs/worktrees.zh-CN.md)。
+- **文件访问边界**：文件浏览器仅能访问在 Pi Web Space 中选择过的工作目录，以及它已识别的项目或会话根目录；它不是通用的文件系统浏览器。
+- **Git worktree**：切换器何时显示、如何创建 worktree，以及删除会产生什么影响，见 [Pi Web Space 里的 Worktree](./docs/worktrees.zh-CN.md)。
 
 ## 开发
 
@@ -105,7 +109,7 @@ npm install
 npm run dev
 ```
 
-开发服务器运行在 [http://127.0.0.1:30141](http://127.0.0.1:30141)。常用检查命令：
+开发服务器运行在 [http://127.0.0.1:42141](http://127.0.0.1:42141)。常用检查命令：
 
 ```bash
 npm test

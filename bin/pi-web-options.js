@@ -32,7 +32,7 @@ function normalizePort(value) {
 function getHelpText() {
   return `Usage: pi-web [options]
 
-Start the Pi Web UI server.
+Start the Pi Web Space UI server.
 
 Options:
   -p, --port <port>          Server port (default: 30141, or PORT)

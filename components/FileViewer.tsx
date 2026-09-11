@@ -518,7 +518,7 @@ function ImageViewer({ filePath, cwd, sourceSessionId, watchEnabled = true }: Pr
           display: "flex",
           alignItems: "center",
           gap: 12,
-          padding: "4px 16px",
+          height: 32, minHeight: 32, maxHeight: 32, boxSizing: "border-box", padding: "0 12px",
           borderBottom: "1px solid var(--border)",
           fontSize: 11,
           color: "var(--text-dim)",
@@ -688,7 +688,7 @@ function AudioViewer({ filePath, cwd, sourceSessionId, watchEnabled = true }: Pr
           display: "flex",
           alignItems: "center",
           gap: 12,
-          padding: "4px 16px",
+          height: 32, minHeight: 32, maxHeight: 32, boxSizing: "border-box", padding: "0 12px",
           borderBottom: "1px solid var(--border)",
           fontSize: 11,
           color: "var(--text-dim)",
@@ -841,7 +841,7 @@ function VideoViewer({ filePath, cwd, sourceSessionId, watchEnabled = true }: Pr
           display: "flex",
           alignItems: "center",
           gap: 12,
-          padding: "4px 16px",
+          height: 32, minHeight: 32, maxHeight: 32, boxSizing: "border-box", padding: "0 12px",
           borderBottom: "1px solid var(--border)",
           fontSize: 11,
           color: "var(--text-dim)",
@@ -1028,7 +1028,7 @@ function DocumentViewer({ filePath, cwd, sourceSessionId, watchEnabled = true }:
           display: "flex",
           alignItems: "center",
           gap: 12,
-          padding: "4px 16px",
+          height: 32, minHeight: 32, maxHeight: 32, boxSizing: "border-box", padding: "0 12px",
           borderBottom: "1px solid var(--border)",
           fontSize: 11,
           color: "var(--text-dim)",
@@ -1392,7 +1392,6 @@ function TextFileViewer({
           ...FILE_CODE_STYLE,
           width: wrapLines ? "100%" : "max-content",
           minWidth: "100%",
-          minHeight: "100%",
           overflow: "visible",
         }}
         codeTagProps={{
@@ -1513,23 +1512,24 @@ function TextFileViewer({
     requestedInitialDisplayMode,
   ]);
 
-  if (loading || (requestedInitialDisplayMode === "diff" && gitDiffLoading && !data)) {
+  const pending = loading || (requestedInitialDisplayMode === "diff" && gitDiffLoading && !data);
+  if (pending || (error && !isDeletedDiff) || (!data && !isDeletedDiff)) {
     return (
-      <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)", fontSize: 13 }}>
-        {t("i18n.loading")}
+      <div className="file-viewer-shell" aria-busy={pending} style={{ height: "100%", display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--bg)" }}>
+        <div className="file-viewer-toolbar" style={{ display: "flex", alignItems: "center", gap: 8, height: 32, minHeight: 32, maxHeight: 32, flexShrink: 0, boxSizing: "border-box", padding: "0 12px", borderBottom: "1px solid var(--border)", fontSize: 11, color: "var(--text-dim)" }}>
+          <span className="file-viewer-path" title={filePath} style={{ fontFamily: "var(--font-mono)" }}>{getRelativeFilePath(filePath, cwd)}</span>
+          <span style={{ marginLeft: "auto", whiteSpace: "nowrap" }}>{pending ? t("i18n.loading") : "—"}</span>
+          <span aria-hidden="true" style={{ display: "flex", gap: 6 }}>
+            {[0, 1, 2].map((i) => <span key={i} style={{ display: "block", width: 24, height: 24, border: "1px solid var(--border)", borderRadius: 5, background: "var(--bg-hover)", opacity: 0.5 }} />)}
+          </span>
+        </div>
+        {pending ? <div role="status" style={{ padding: "18px 16px", overflow: "hidden" }}>
+          <span className="sr-only">{t("i18n.loading")}</span>
+          {[58, 80, 68, 44, 74, 52, 36, 65].map((width, i) => <div key={i} aria-hidden="true" style={{ height: 10, width: width + "%", maxWidth: 640, marginBottom: 14, background: "var(--bg-hover)", borderRadius: 3 }} />)}
+        </div> : <div role="alert" style={{ padding: 24, color: "#f87171", fontSize: 13 }}>{error}</div>}
       </div>
     );
   }
-
-  if (error && !isDeletedDiff) {
-    return (
-      <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#f87171", fontSize: 13 }}>
-        {error}
-      </div>
-    );
-  }
-
-  if (!data && !isDeletedDiff) return null;
 
   const content = viewerContent;
   const markdownDirectory = getFileDirectory(filePath);
@@ -1553,7 +1553,7 @@ function TextFileViewer({
           display: "flex",
           alignItems: "center",
           gap: 8,
-          padding: "5px 12px",
+          height: 32, minHeight: 32, maxHeight: 32, boxSizing: "border-box", padding: "0 12px",
           borderBottom: "1px solid var(--border)",
           fontSize: 11,
           color: "var(--text-dim)",
@@ -1697,7 +1697,7 @@ function TextFileViewer({
           viewerStateRef.current.scrollTop = event.currentTarget.scrollTop;
           viewerStateRef.current.scrollLeft = event.currentTarget.scrollLeft;
         }}
-        style={{ flex: 1, overflow: "auto", background: "var(--bg)", paddingBottom: data?.truncated ? 48 : undefined }}
+        style={{ flex: effectiveDisplayMode === "source" ? "0 1 auto" : 1, minHeight: 0, marginRight: 6, marginBottom: 6, overflow: "auto", background: "var(--bg)", paddingBottom: data?.truncated ? 48 : undefined }}
       >
         {effectiveDisplayMode === "diff" && hasGitDiff ? (
           <DiffView patch={gitDiff.patch!} />
@@ -1780,7 +1780,6 @@ function TextFileViewer({
             style={{
               width: wrapLines ? "100%" : "max-content",
               minWidth: "100%",
-              minHeight: "100%",
               background: "var(--bg)",
               ...FILE_CODE_STYLE,
             }}

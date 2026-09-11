@@ -13,7 +13,7 @@ type ThemeState = {
 type ToggleOrigin = { x: number; y: number };
 
 const STORAGE_KEY = "pi-theme";
-const SERVER_SNAPSHOT: ThemeState = { preference: "auto", theme: "light" };
+const SERVER_SNAPSHOT: ThemeState = { preference: "light", theme: "light" };
 
 const listeners = new Set<() => void>();
 let state: ThemeState | null = null;
@@ -35,7 +35,7 @@ function readStoredPreference(): ThemePreference {
   } catch {
     // ignore storage errors (private mode, quota, etc.)
   }
-  return "auto";
+  return "light";
 }
 
 function resolveTheme(preference: ThemePreference): ResolvedTheme {

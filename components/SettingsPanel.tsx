@@ -1,4 +1,6 @@
 "use client";
+import { PiLogo } from "./PiLogo";
+import { useTemporaryWorkspace } from "@/hooks/useTemporaryWorkspace";
 
 import { useEffect, useState, type ReactNode } from "react";
 import { useI18n } from "@/hooks/useI18n";
@@ -32,6 +34,11 @@ import { PluginsConfig } from "./PluginsConfig";
 import { ConfigButton, ConfigSwitch } from "./SettingsUi";
 
 interface Props {
+  soundEnabled: boolean;
+  onSoundToggle: () => void;
+  systemContent: ReactNode;
+  toolsContent: ReactNode;
+  onLoadSystemInfo: () => void;
   cwd: string | null;
   sessionId: string | null;
   initialSection: SettingsSection;
@@ -55,6 +62,9 @@ export function SettingsSectionIcon({ section, size = 16, strokeWidth = 1.8 }: {
     className: "settings-section-icon",
   };
 
+  if (section === "about") return <svg {...common}><circle cx="12" cy="12" r="9" /><path d="M12 11v6M12 7h.01" /></svg>;
+  if (section === "system") return <svg {...common}><path d="M14 2H6a2 2 0 0 0-2 2v16h16V8Z" /><path d="M14 2v6h6M8 12h8M8 16h8" /></svg>;
+  if (section === "tools") return <svg {...common}><path d="m14 6 4 4 4-4a6 6 0 0 1-8 8l-7 7a2 2 0 0 1-3-3l7-7a6 6 0 0 1 8-8Z" /></svg>;
   if (section === "general") return <svg {...common}><path d="M20 7h-9M14 17H5" /><circle cx="7" cy="7" r="3" /><circle cx="17" cy="17" r="3" /></svg>;
   if (section === "models") return <svg {...common}><rect x="4" y="4" width="16" height="16" rx="2" /><rect x="9" y="9" width="6" height="6" /><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 15h3M1 9h3M1 15h3" /></svg>;
   if (section === "skills") return <svg {...common}><path d="m12 2-10 5 10 5 10-5-10-5Z" /><path d="m2 12 10 5 10-5M2 17l10 5 10-5" /></svg>;
@@ -62,9 +72,10 @@ export function SettingsSectionIcon({ section, size = 16, strokeWidth = 1.8 }: {
   return <svg {...common}><path d="M9 7V2M15 7V2M6 13V8a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v5a6 6 0 0 1-12 0ZM12 19v3" /></svg>;
 }
 
-function GeneralSettings({ sessionId, onSessionReloaded, quoteSelectionEnabled, onQuoteSelectionChange }: Pick<Props, "sessionId" | "onSessionReloaded" | "quoteSelectionEnabled" | "onQuoteSelectionChange">) {
+function GeneralSettings({ soundEnabled, onSoundToggle, sessionId, onSessionReloaded, quoteSelectionEnabled, onQuoteSelectionChange }: Pick<Props, "soundEnabled" | "onSoundToggle" | "sessionId" | "onSessionReloaded" | "quoteSelectionEnabled" | "onQuoteSelectionChange">) {
   const { locale, setLocale, supportedLocales, t } = useI18n();
   const { preference, setThemePreference } = useTheme();
+  const { path: temporaryWorkspacePath, defaultPath: temporaryWorkspaceDefault, resetPath: resetTemporaryWorkspacePath, savePath: saveTemporaryWorkspacePath } = useTemporaryWorkspace();
   const { width: chatContentWidth, setWidth: setChatContentWidth, fontSize, setFontSize } = useChatAppearance();
   const [shellSettings, setShellSettings] = useState<ShellToolSettingsResponse | null>(null);
   const [shellSaving, setShellSaving] = useState(false);
@@ -191,6 +202,10 @@ function GeneralSettings({ sessionId, onSessionReloaded, quoteSelectionEnabled, 
         <h3 className="settings-general-heading">{t("settings.chat")}</h3>
         <div className="settings-chat-options">
           <div className="settings-chat-option settings-chat-switch-option">
+            <span>{t("settings.completionSound")}</span>
+            <ConfigSwitch checked={soundEnabled} label={t("settings.completionSound")} onChange={onSoundToggle} />
+          </div>
+          <div className="settings-chat-option settings-chat-switch-option">
             <span>{t("settings.thinkingExpandedDefault")}</span>
             <ConfigSwitch
               checked={thinkingExpanded}
@@ -200,6 +215,13 @@ function GeneralSettings({ sessionId, onSessionReloaded, quoteSelectionEnabled, 
                 setThinkingExpanded(enabled);
               }}
             />
+          </div>
+          <div className="settings-chat-option">
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <label htmlFor="temporary-workspace-path">临时工作区路径</label>
+              <button type="button" onClick={resetTemporaryWorkspacePath} disabled={temporaryWorkspacePath === temporaryWorkspaceDefault} style={{ border: 0, borderRadius: 5, padding: "4px 8px", background: "var(--bg-hover)", color: "var(--text-muted)", cursor: "pointer", opacity: temporaryWorkspacePath === temporaryWorkspaceDefault ? 0.45 : 1 }}>恢复默认</button>
+            </div>
+            <input id="temporary-workspace-path" defaultValue={temporaryWorkspacePath} key={temporaryWorkspacePath} placeholder={temporaryWorkspaceDefault} onBlur={(event) => saveTemporaryWorkspacePath(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") event.currentTarget.blur(); }} style={{ width: "100%", marginTop: 8, padding: "8px 10px", border: "1px solid var(--border)", borderRadius: 6, background: "var(--bg)", color: "var(--text)" }} />
           </div>
           <div className="settings-chat-option settings-chat-range-option">
             <div className="settings-chat-range-header">
@@ -226,6 +248,7 @@ function GeneralSettings({ sessionId, onSessionReloaded, quoteSelectionEnabled, 
               max={CHAT_CONTENT_WIDTH_MAX}
               step={10}
               value={chatContentWidth}
+              style={{ background: `linear-gradient(to right, var(--accent) ${(chatContentWidth - CHAT_CONTENT_WIDTH_MIN) / (CHAT_CONTENT_WIDTH_MAX - CHAT_CONTENT_WIDTH_MIN) * 100}%, var(--border) 0)` }}
               onChange={(event) => setChatContentWidth(Number(event.target.value))}
             />
           </div>
@@ -254,6 +277,7 @@ function GeneralSettings({ sessionId, onSessionReloaded, quoteSelectionEnabled, 
               max={CHAT_CONTENT_FONT_SIZE_MAX}
               step={1}
               value={fontSize}
+              style={{ background: `linear-gradient(to right, var(--accent) ${(fontSize - CHAT_CONTENT_FONT_SIZE_MIN) / (CHAT_CONTENT_FONT_SIZE_MAX - CHAT_CONTENT_FONT_SIZE_MIN) * 100}%, var(--border) 0)` }}
               onChange={(event) => setFontSize(Number(event.target.value))}
             />
           </div>
@@ -350,7 +374,7 @@ function GeneralSettings({ sessionId, onSessionReloaded, quoteSelectionEnabled, 
   );
 }
 
-export function SettingsPanel({ cwd, sessionId, initialSection, onClose, onSessionReloaded, quoteSelectionEnabled, onQuoteSelectionChange }: Props) {
+export function SettingsPanel({ soundEnabled, onSoundToggle, systemContent, toolsContent, onLoadSystemInfo, cwd, sessionId, initialSection, onClose, onSessionReloaded, quoteSelectionEnabled, onQuoteSelectionChange }: Props) {
   const { t } = useI18n();
   const [section, setSection] = useState<SettingsSection>(initialSection);
   const [mountedSections, setMountedSections] = useState<ReadonlySet<SettingsSection>>(
@@ -362,9 +386,16 @@ export function SettingsPanel({ cwd, sessionId, initialSection, onClose, onSessi
     { id: "skills", label: t("common.skills"), requiresProject: true },
     { id: "agents", label: t("common.agents"), requiresProject: true },
     { id: "plugins", label: t("common.plugins"), requiresProject: true },
+    { id: "system", label: t("system.label"), requiresProject: false },
+    { id: "tools", label: t("tools.label"), requiresProject: false },
+    { id: "about", label: t("settings.about"), requiresProject: false },
   ];
 
   useEffect(() => setLastSettingsSection(initialSection), [initialSection]);
+
+  useEffect(() => {
+    if (section === "system" || section === "tools") onLoadSystemInfo();
+  }, [section, onLoadSystemInfo]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -410,19 +441,11 @@ export function SettingsPanel({ cwd, sessionId, initialSection, onClose, onSessi
       <div className="settings-dialog-surface">
         <div className="settings-dialog-header">
           <strong className="settings-dialog-title">{t("settings.title")}</strong>
-          <select
-            aria-label={t("settings.title")}
-            value={section}
-            onChange={(event) => activateSection(event.target.value as SettingsSection)}
-            className="settings-mobile-section-picker"
-          >
-            {sections.map((item) => (
-              <option key={item.id} value={item.id} disabled={item.requiresProject && !cwd}>
-                {item.label}
-              </option>
-            ))}
-          </select>
-          <nav aria-label={t("settings.title")} className="settings-section-tabs">
+          <button type="button" onClick={onClose} title={t("i18n.close")} aria-label={t("i18n.close")} className="config-close-button settings-dialog-close">×</button>
+        </div>
+
+        <div className="settings-dialog-body" style={{ display: "flex", flex: 1, minHeight: 0, overflow: "hidden" }}>
+          <nav aria-label={t("settings.title")} className="settings-section-tabs settings-side-nav">
             {sections.map((item) => {
               const selected = section === item.id;
               const disabled = item.requiresProject && !cwd;
@@ -442,16 +465,24 @@ export function SettingsPanel({ cwd, sessionId, initialSection, onClose, onSessi
               );
             })}
           </nav>
-          <button type="button" onClick={onClose} title={t("i18n.close")} aria-label={t("i18n.close")} className="config-close-button settings-dialog-close">×</button>
-        </div>
-
         <main className="settings-dialog-main">
-          {sectionHost("general", <GeneralSettings sessionId={sessionId} onSessionReloaded={onSessionReloaded} quoteSelectionEnabled={quoteSelectionEnabled} onQuoteSelectionChange={onQuoteSelectionChange} />)}
+          <h2 className="settings-page-title">{sections.find((item) => item.id === section)?.label}</h2>
+          {sectionHost("general", <GeneralSettings soundEnabled={soundEnabled} onSoundToggle={onSoundToggle} sessionId={sessionId} onSessionReloaded={onSessionReloaded} quoteSelectionEnabled={quoteSelectionEnabled} onQuoteSelectionChange={onQuoteSelectionChange} />)}
           {sectionHost("models", <ModelsConfig embedded onClose={onClose} />)}
           {cwd && sectionHost("skills", <SkillsConfig embedded key={cwd} cwd={cwd} onClose={onClose} />)}
           {cwd && sectionHost("agents", <AgentsConfig embedded key={cwd} cwd={cwd} sessionId={sessionId} onClose={onClose} onReloaded={onSessionReloaded} />)}
           {cwd && sectionHost("plugins", <PluginsConfig embedded key={cwd} cwd={cwd} sessionId={sessionId} onClose={onClose} onReloaded={onSessionReloaded} />)}
+          {sectionHost("system", systemContent)}
+          {sectionHost("tools", toolsContent)}
+          {sectionHost("about", <div style={{ display: "grid", gap: 20, paddingTop: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 22, fontWeight: 700 }}><PiLogo />Pi Web Space</div>
+            <p style={{ color: "var(--text-muted)" }}>{t("settings.aboutDescription")}</p>
+            <div>Web v{process.env.NEXT_PUBLIC_APP_VERSION ?? "0.0.0"} · Pi v{process.env.NEXT_PUBLIC_PI_VERSION ?? "0.0.0"}</div>
+            <a href="https://github.com/WJBFks/pi-web-space" target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)", overflowWrap: "anywhere" }}>GitHub ↗ · WJBFks/pi-web-space</a>
+            <p style={{ color: "var(--text-muted)", fontSize: 13 }}>{t("settings.aboutUpstream")} <a href="https://github.com/agegr/pi-web" target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)" }}>agegr/pi-web</a> · MIT</p>
+          </div>)}
         </main>
+        </div>
       </div>
     </div>
   );

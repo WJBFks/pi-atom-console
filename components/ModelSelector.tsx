@@ -25,7 +25,6 @@ interface ModelSelectorProps {
   placement?: "up" | "auto";
 }
 
-const MODEL_FILTER_THRESHOLD = 8;
 const MODEL_OPTION_COLLATOR = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
 
 function compareModelOptions(a: ModelSelectorOption, b: ModelSelectorOption): number {
@@ -59,7 +58,7 @@ export function ModelSelector({
   variant = "toolbar",
   placement = "up",
 }: ModelSelectorProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const isMobile = useIsMobile();
   const rootRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -68,15 +67,12 @@ export function ModelSelector({
   const [filter, setFilter] = useState("");
   const locked = disabled || busy;
   const sortedOptions = useMemo(() => [...options].sort(compareModelOptions), [options]);
-  const filteredOptions = filterModelOptions(sortedOptions, filter);
-  const showFilter = sortedOptions.length > MODEL_FILTER_THRESHOLD;
-  const modelsByProvider: { provider: string; options: ModelSelectorOption[] }[] = [];
-
-  for (const option of filteredOptions) {
-    const group = modelsByProvider.find((item) => item.provider === option.provider);
-    if (group) group.options.push(option);
-    else modelsByProvider.push({ provider: option.provider, options: [option] });
-  }
+  const [showAll, setShowAll] = useState(false);
+  const [selectedProvider, setSelectedProvider] = useState<string | null>(null);
+  const providers = [...new Set(sortedOptions.map((option) => option.provider))];
+  const providerOptions = showAll ? sortedOptions : sortedOptions.filter((option) => option.provider === selectedProvider);
+  const filteredOptions = filterModelOptions(providerOptions, filter);
+  const modelGroups = providers.map((provider) => ({ provider, options: filteredOptions.filter((option) => option.provider === provider) })).filter((group) => group.options.length > 0);
 
   const currentName = selectedLabel ?? (value
     ? sortedOptions.find((option) => option.modelId === value.modelId && option.provider === value.provider)?.name ?? value.modelId
@@ -172,10 +168,16 @@ export function ModelSelector({
         onClick={(event) => {
           const rect = event.currentTarget.getBoundingClientRect();
           setAnchorRect({ top: rect.top, right: rect.right, bottom: rect.bottom, left: rect.left, width: rect.width });
-          setOpen((current) => {
-            if (current) setFilter("");
-            return !current;
-          });
+          setFilter("");
+          if (!open) {
+            setShowAll(false);
+            setSelectedProvider(
+              value && providers.includes(value.provider)
+                ? value.provider
+                : providers.length === 1 ? providers[0] : null,
+            );
+          }
+          setOpen(!open);
         }}
         onMouseEnter={(event) => {
           if (locked) return;
@@ -226,12 +228,12 @@ export function ModelSelector({
           : { top: anchorRect.bottom + 6 };
         const horizontalPosition: CSSProperties = isMobile
           ? { left: 8, right: 8, maxWidth: "calc(100vw - 16px)" }
-          : { left: anchorRect.left, width: "max-content", minWidth: anchorRect.width, maxWidth: Math.max(anchorRect.width, viewportWidth - anchorRect.left - 8) };
+          : { left: Math.max(8, Math.min(anchorRect.left, viewportWidth - 528)), width: Math.min(520, viewportWidth - 16), maxWidth: "calc(100vw - 16px)" };
 
         return (
           <div
             ref={panelRef}
-            role="listbox"
+            role="group"
             aria-label={ariaLabel}
             style={{
               position: "fixed",
@@ -248,7 +250,23 @@ export function ModelSelector({
               boxShadow: openAbove ? "0 -4px 16px rgba(0,0,0,0.10)" : "0 4px 16px rgba(0,0,0,0.10)",
             }}
           >
-            {showFilter && (
+            <div style={{ display: "flex", minHeight: 0, height: Math.min(360, maxHeight), overflow: "hidden" }}>
+              <div role="listbox" aria-label={locale.startsWith("zh") ? "供应方" : "Providers"} style={{ width: "38%", flexShrink: 0, display: "flex", flexDirection: "column", minHeight: 0, borderRight: "1px solid var(--border)" }}>
+                <div style={{ padding: "10px 12px", textAlign: "center", fontWeight: 600, fontSize: 12, color: "var(--text-muted)" }}>{locale.startsWith("zh") ? "选择供应方" : "Select provider"}</div>
+                <div style={{ flex: 1, minHeight: 0, overflowY: "auto" }}>
+                {providers.map((provider) => (
+                  <ModelOptionButton key={provider} active={!showAll && provider === selectedProvider} label={provider}
+                    onClick={() => { setShowAll(false); setSelectedProvider(provider); setFilter(""); }} />
+                ))}
+                </div>
+                <div style={{ flexShrink: 0, borderTop: "1px solid var(--border)", padding: "4px 0" }}>
+                  <ModelOptionButton centered active={showAll} label={locale.startsWith("zh") ? "显示全部" : "Show all"}
+                    onClick={() => { setShowAll(true); setFilter(""); }} />
+                </div>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", flex: 1, minWidth: 0, minHeight: 0 }}>
+                <div style={{ padding: "10px 12px", textAlign: "center", fontWeight: 600, fontSize: 12, color: "var(--text-muted)", flexShrink: 0 }}>{showAll ? (locale.startsWith("zh") ? "全部模型" : "All models") : selectedProvider ?? (locale.startsWith("zh") ? "模型" : "Models")}</div>
+            {(
               <div style={{ flexShrink: 0, padding: "6px 8px", borderBottom: "1px solid var(--border)" }}>
                 <input
                   value={filter}
@@ -261,7 +279,7 @@ export function ModelSelector({
                   style={{
                     boxSizing: "border-box",
                     width: "100%",
-                    minWidth: isMobile ? 0 : 220,
+                    minWidth: 0,
                     padding: "5px 8px",
                     border: "1px solid var(--border)",
                     borderRadius: 5,
@@ -274,7 +292,7 @@ export function ModelSelector({
                 />
               </div>
             )}
-            <div style={{ minHeight: 0, overflowY: "auto" }}>
+            <div role="listbox" aria-label={locale.startsWith("zh") ? "模型" : "Models"} style={{ minHeight: 0, overflowY: "auto" }}>
               {onClear && !filter.trim() && (
                 <ModelOptionButton active={!value} label={emptyLabel ?? "Default"} onClick={() => {
                   setOpen(false);
@@ -282,27 +300,28 @@ export function ModelSelector({
                   onClear();
                 }} />
               )}
-              {modelsByProvider.length === 0 ? (
-                <div style={{ padding: "8px 12px", color: "var(--text-dim)", fontSize: 12, whiteSpace: "nowrap" }}>
+              {!showAll && selectedProvider === null ? (
+                <div style={{ padding: 12, color: "var(--text-dim)", fontSize: 12 }}>{locale.startsWith("zh") ? "请先选择供应方" : "Select a provider first"}</div>
+              ) : filteredOptions.length === 0 ? (
+                <div style={{ padding: "8px 12px", color: "var(--text-dim)", fontSize: 12 }}>
                   {filter.trim() ? t("chat.noMatchingModels") : "No available models"}
                 </div>
-              ) : modelsByProvider.map((group, index) => (
+              ) : showAll ? modelGroups.map((group) => (
                 <div key={group.provider}>
-                  {modelsByProvider.length > 1 && (
-                    <div style={{ padding: "6px 12px 4px", borderTop: index > 0 || onClear ? "1px solid var(--border)" : "none", color: "var(--text-dim)", fontSize: 10, fontWeight: 600, letterSpacing: 0, textTransform: "uppercase" }}>
-                      {group.provider}
-                    </div>
-                  )}
+                  <div style={{ padding: "8px 12px", borderTop: "1px solid var(--border)", fontSize: 11, fontWeight: 600, color: "var(--text-dim)" }}>{group.provider}</div>
                   {group.options.map((option) => (
-                    <ModelOptionButton
-                      key={`${option.provider}:${option.modelId}`}
+                    <ModelOptionButton key={`${option.provider}:${option.modelId}`}
                       active={option.modelId === value?.modelId && option.provider === value?.provider}
-                      label={option.name}
-                      onClick={() => choose(option)}
-                    />
+                      label={option.name || option.modelId} onClick={() => choose(option)} />
                   ))}
                 </div>
+              )) : filteredOptions.map((option) => (
+                <ModelOptionButton key={`${option.provider}:${option.modelId}`}
+                  active={option.modelId === value?.modelId && option.provider === value?.provider}
+                  label={option.name || option.modelId} onClick={() => choose(option)} />
               ))}
+            </div>
+              </div>
             </div>
           </div>
         );
@@ -311,20 +330,20 @@ export function ModelSelector({
   );
 }
 
-function ModelOptionButton({ active, label, onClick }: { active: boolean; label: string; onClick: () => void }) {
+function ModelOptionButton({ active, label, onClick, centered = false }: { active: boolean; label: string; onClick: () => void; centered?: boolean }) {
   return (
     <button
       type="button"
       role="option"
       aria-selected={active}
       onClick={onClick}
-      style={{ display: "flex", alignItems: "center", gap: 8, width: "100%", padding: "7px 12px", border: "none", background: active ? "var(--bg-selected)" : "none", color: active ? "var(--text)" : "var(--text-muted)", cursor: "pointer", fontSize: 12, fontWeight: active ? 600 : 400, textAlign: "left", whiteSpace: "nowrap" }}
+      style={{ display: "flex", alignItems: "center", justifyContent: centered ? "center" : undefined, position: "relative", gap: 8, width: "100%", padding: "7px 12px", border: "none", background: active ? "var(--bg-selected)" : "none", color: active ? "var(--text)" : "var(--text-muted)", cursor: "pointer", fontSize: 12, fontWeight: active ? 600 : 400, textAlign: "left", whiteSpace: "nowrap" }}
       onMouseEnter={(event) => { if (!active) event.currentTarget.style.background = "var(--bg-hover)"; }}
       onMouseLeave={(event) => { if (!active) event.currentTarget.style.background = "none"; }}
     >
       {active
-        ? <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }} aria-hidden="true"><polyline points="1.5 5 4 7.5 8.5 2.5" /></svg>
-        : <span style={{ width: 10, flexShrink: 0 }} />}
+        ? <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, position: centered ? "absolute" : undefined, left: centered ? 12 : undefined }} aria-hidden="true"><polyline points="1.5 5 4 7.5 8.5 2.5" /></svg>
+        : !centered && <span style={{ width: 10, flexShrink: 0 }} />}
       <span title={label} style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis" }}>{label}</span>
     </button>
   );

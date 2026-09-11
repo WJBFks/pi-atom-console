@@ -6,19 +6,22 @@ import { formatRelativeTime } from "@/lib/i18n/format";
 import type { SessionInfo } from "@/lib/types";
 import type { SessionSearchResponse } from "@/lib/session-search";
 
-export function SessionSearch({ open, query, refreshKey, children, selectedSessionId, onSelectSession }: {
+export function SessionSearch({ open, query, refreshKey, children, selectedSessionId, onSelectSession, visibleSessionIds }: {
   open: boolean;
   query: string;
   refreshKey: number | null;
   children: ReactNode;
   selectedSessionId: string | null;
   onSelectSession: (session: SessionInfo, entryId?: string, blockIndex?: number) => void;
+  /** Client-side archive state is deliberately local, so filter API results here. */
+  visibleSessionIds?: ReadonlySet<string>;
 }) {
   const { t, locale } = useI18n();
   const [state, setState] = useState<{ query: string; response?: SessionSearchResponse; failed?: boolean }>({ query: "" });
   const search = query.trim();
   const response = state.query === search ? state.response : undefined;
   const failed = state.query === search && state.failed;
+  const results = response?.results.filter(({ session }) => !visibleSessionIds || visibleSessionIds.has(session.id));
 
   useEffect(() => {
     if (!open || !search) return;
@@ -44,13 +47,13 @@ export function SessionSearch({ open, query, refreshKey, children, selectedSessi
     <div className="min-h-20 flex-1 overflow-y-auto" aria-busy={!response && !failed}>
       <div role="status" className="px-3 py-2 text-xs text-text-muted">
         {failed ? t("sidebar.sessionSearchFailed") : !response ? t("sidebar.sessionSearching")
-          : response.results.length === 0 ? t("sidebar.sessionSearchEmpty")
-          : t("sidebar.sessionSearchCount", { count: response.results.length })}
+          : results?.length === 0 ? t("sidebar.sessionSearchEmpty")
+          : t("sidebar.sessionSearchCount", { count: results?.length ?? 0 })}
       </div>
       {response?.truncated && (
         <div role="status" className="px-3 pb-2 text-xs text-text-muted">{t("sidebar.sessionSearchPartial")}</div>
       )}
-      {response?.results.map(({ session, entryId, blockIndex, before, match, after }) => (
+      {results?.map(({ session, entryId, blockIndex, before, match, after }) => (
         <button
           key={session.id}
           type="button"

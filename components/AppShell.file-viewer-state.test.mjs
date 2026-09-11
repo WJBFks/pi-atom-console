@@ -26,6 +26,6 @@ test("the active viewer restores tab state and saves it with a revision", () => 
   assert.match(block, /handleFileViewerStateChange\(\s*activeFileTab\.id,\s*activeFileTab\.viewerRevision \?\? 0,/);
 });
 
-test("closing the file panel pauses the active viewer watcher", () => {
-  assert.match(fileContentBlock(), /watchEnabled=\{rightPanelOpen\}/);
+test("closing the file panel or selecting the explorer pauses the viewer watcher", () => {
+  assert.match(fileContentBlock(), /watchEnabled=\{rightPanelOpen && rightPanelView === "tabs"\}/);
 });

@@ -1,14 +1,14 @@
 {
   "name": "@agegr/pi-web",
   "version": "0.9.0",
-  "description": "Web UI for the pi coding agent",
-  "homepage": "https://github.com/agegr/pi-web#readme",
+  "description": "Pi Web Space — a browser workspace for the pi coding agent",
+  "homepage": "https://github.com/WJBFks/pi-web-space#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/agegr/pi-web.git"
+    "url": "git+https://github.com/WJBFks/pi-web-space.git"
   },
   "bugs": {
-    "url": "https://github.com/agegr/pi-web/issues"
+    "url": "https://github.com/WJBFks/pi-web-space/issues"
   },
   "license": "MIT",
   "engines": {
@@ -29,8 +29,8 @@
   ],
   "scripts": {
     "postinstall": "node bin/prepare-terminal.js",
-    "dev": "next dev -H 127.0.0.1 -p 30141",
-    "dev:lan": "next dev -H 0.0.0.0 -p 30141",
+    "dev": "next dev -H 127.0.0.1 -p 42141",
+    "dev:lan": "next dev -H 0.0.0.0 -p 42141",
     "build": "next build --webpack",
     "start": "next start -H 127.0.0.1 -p 30141",
     "start:lan": "next start -H 0.0.0.0 -p 30141",
