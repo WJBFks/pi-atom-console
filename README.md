@@ -35,7 +35,7 @@ npm ci
 npm run dev
 ```
 
-Open [http://127.0.0.1:42141](http://127.0.0.1:42141).
+Open [http://127.0.0.1:40141](http://127.0.0.1:40141).
 
 Configure your provider in **Settings → Models**. The upstream npm package `@agegr/pi-web` does not install this fork. Environment variables and storage keys are retained for compatibility.
 
@@ -45,7 +45,7 @@ The primary command is `pws`; `pi-web-space` is an alias with identical options.
 
 
 
-The options below apply to the built checkout launcher (`pws`). Development uses port **42141**; `npm run dev:lan` enables LAN access.
+The options below apply to the built checkout launcher (`pws`). Development uses port **40141**; `npm run dev:lan` enables LAN access.
 
 
 For port and hostname, command-line options override the corresponding environment variables. Either `--no-open` or `PI_WEB_NO_OPEN=1` disables automatic browser opening. Run `pws --help` (or `-h`) to print startup options and exit without starting the server. Unknown options exit with an error.
@@ -53,7 +53,7 @@ For port and hostname, command-line options override the corresponding environme
 | Option or environment variable | Purpose | Default |
 | --- | --- | --- |
 | `--help`, `-h` | Print startup options and exit | — |
-| `--port <port>`, `-p <port>`, or `PORT` | Server port | `30141` |
+| `--port <port>`, `-p <port>`, or `PORT` | Server port | `40141` |
 | `--hostname <host>`, `-H <host>`, or `PI_WEB_HOSTNAME` | Bind hostname | `127.0.0.1` |
 | `--no-open` or `PI_WEB_NO_OPEN=1` | Do not open a browser automatically | Browser opens |
 | `PI_WEB_SKIP_VERSION_CHECK=1` | Disable the inherited upstream update API check | Unset |
@@ -163,7 +163,7 @@ npm install
 npm run dev
 ```
 
-The development server runs at [http://127.0.0.1:42141](http://127.0.0.1:42141). Run the common checks with:
+The development server runs at [http://127.0.0.1:40141](http://127.0.0.1:40141). Run the common checks with:
 
 ```bash
 npm test

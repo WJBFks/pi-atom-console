@@ -4,7 +4,7 @@ import { mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 
-const base = process.env.E2E_BASE_URL || "http://127.0.0.1:30141";
+const base = process.env.E2E_BASE_URL || "http://127.0.0.1:40141";
 const artifacts = fileURLToPath(new URL("../test-results/themes/", import.meta.url));
 const themes = ["light", "dark", "mist", "rose", "pine", "auto"];
 const labels = ["Light", "Dark", "Mist", "Rose", "Pine", "System"];
