@@ -479,7 +479,7 @@ export function SettingsPanel({ soundEnabled, onSoundToggle, systemContent, tool
             <p style={{ color: "var(--text-muted)" }}>{t("settings.aboutDescription")}</p>
             <div>Web v{process.env.NEXT_PUBLIC_APP_VERSION ?? "0.0.0"} · Pi v{process.env.NEXT_PUBLIC_PI_VERSION ?? "0.0.0"}</div>
             <a href="https://github.com/WJBFks/pi-atom-web" target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)", overflowWrap: "anywhere" }}>GitHub ↗ · WJBFks/pi-atom-web</a>
-            <p style={{ color: "var(--text-muted)", fontSize: 13 }}>{t("settings.aboutUpstream")} <a href="https://github.com/agegr/pi-web" target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)" }}>agegr/pi-web</a> · MIT</p>
+            <p style={{ color: "var(--text-muted)", fontSize: 13 }}>{t("settings.aboutUpstream")} <a href="https://github.com/WJBFks/pi-atom-web/blob/main/OPEN_SOURCE_NOTICES.md" target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)" }}>Open-source notices ↗</a> · MIT</p>
           </div>)}
         </main>
         </div>

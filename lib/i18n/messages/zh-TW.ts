@@ -7,7 +7,7 @@ export const zhTWLocale: LocalePlugin = {
   messages: {
     "settings.about": "關於",
     "settings.aboutDescription": "為 pi 程式設計代理打造的瀏覽器工作空間。",
-    "settings.aboutUpstream": "基於上游專案",
+    "settings.aboutUpstream": "致謝與授權：",
     "sidebar.workspaceLabel": "工作區",
     "sidebar.newSessionButton": "新會話",
     "sidebar.contentTabs": "側欄內容",

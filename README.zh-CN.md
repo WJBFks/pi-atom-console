@@ -1,13 +1,11 @@
 # Pi Web Space
 
-基于 [agegr/pi-web](https://github.com/agegr/pi-web) 的工作空间增强分支，保留上游来源和 MIT 许可证。
-
 [English](./README.md) | [日本語](./README.ja.md) | [Русский](./README.ru.md)
 
 [pi 编程智能体](https://github.com/earendil-works/pi)的本地浏览器界面。Pi Web Space 与 pi 共用本机配置和会话文件，可在浏览器中查找和继续对话、运行智能体、配置模型与资源，并查看项目文件。
 
 
-## 本分支新增
+## 工作空间功能
 
 - 工作区与临时会话选择、可配置的临时目录、支持逐项复制的工作区及会话信息卡片。
 - 对话、轨迹、上下文视图；可拖动调整的聊天宽度、文件预览和底部终端。
@@ -150,4 +148,4 @@ docs/            面向用户和贡献者的专题文档
 
 ## 许可证
 
-[MIT](./LICENSE)
+[MIT](./LICENSE)。上游来源、致谢及第三方许可见[开源声明](./OPEN_SOURCE_NOTICES.md)。

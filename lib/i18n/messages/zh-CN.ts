@@ -7,7 +7,7 @@ export const zhCNLocale: LocalePlugin = {
   messages: {
     "settings.about": "关于",
     "settings.aboutDescription": "为 pi 编程智能体打造的浏览器工作空间。",
-    "settings.aboutUpstream": "基于上游项目",
+    "settings.aboutUpstream": "致谢与许可：",
     "sidebar.workspaceLabel": "工作区",
     "sidebar.newSessionButton": "新会话",
     "sidebar.contentTabs": "侧栏内容",

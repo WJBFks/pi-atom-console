@@ -7,7 +7,7 @@ export const enLocale: LocalePlugin = {
   messages: {
     "settings.about": "About",
     "settings.aboutDescription": "A browser workspace for the pi coding agent.",
-    "settings.aboutUpstream": "Based on",
+    "settings.aboutUpstream": "Acknowledgements and licenses:",
     "sidebar.workspaceLabel": "Workspace",
     "sidebar.newSessionButton": "New session",
     "sidebar.contentTabs": "Sidebar content",

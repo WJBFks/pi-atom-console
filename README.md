@@ -1,13 +1,11 @@
 # Pi Web Space
 
-A workspace-focused fork of [agegr/pi-web](https://github.com/agegr/pi-web), retaining its MIT license and upstream attribution.
-
 [中文文档](./README.zh-CN.md) | [日本語](./README.ja.md) | [Русский](./README.ru.md)
 
 Local browser UI for the [pi coding agent](https://github.com/earendil-works/pi). Pi Web Space uses the same local configuration and session files as pi, so you can browse and resume conversations, run agent turns, configure models and resources, and inspect project files from a browser.
 
 
-## What this fork adds
+## Workspace features
 
 - Workspace and temporary-session selection, configurable temporary directories, and workspace/session detail cards with copy actions.
 - Conversation, trace and context views; resizable chat width, file previews and a docked terminal.
@@ -200,4 +198,4 @@ See [AGENTS.md](./AGENTS.md) for the architecture notes and detailed file map.
 
 ## License
 
-[MIT](./LICENSE)
+[MIT](./LICENSE). Upstream attribution and third-party licenses are recorded in [Open-source notices and acknowledgements](./OPEN_SOURCE_NOTICES.md).

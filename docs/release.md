@@ -4,7 +4,7 @@
 - Source: https://github.com/WJBFks/pi-atom-web
 - Commands: `pws` and `pi-web-space`; default port `40141`.
 - First package version: `0.1.9`, the fork's independent release version.
-- Retain the upstream MIT license and copyright notice. Compatibility keys beginning with `pi-web:` or `@agegr/pi-web/session-liveness` are not package identities and must not be renamed.
+- Include both LICENSE (WJBFks copyright notice) and OPEN_SOURCE_NOTICES.md (the full original upstream MIT notice). Compatibility keys beginning with `pi-web:` or `@agegr/pi-web/session-liveness` are not package identities and must not be renamed.
 
 ## Prepare without publishing
 
@@ -21,7 +21,7 @@ npm pack --json
 
 `prepack` checks the package identity, command aliases, license, production build and embedded version. No script automatically publishes or increments the version. A build must be rerun after changing source or version; the version check alone does not detect every stale source change.
 
-Review the tarball file list and size. It must include the production `.next/server`, `.next/static`, runtime dependencies declared in `package.json`, CLI and LICENSE. Development output, caches, secrets and source maps must not be shipped. The dependencies themselves are installed by npm and are not bundled into the tarball.
+Review the tarball file list and size. It must include the production `.next/server`, `.next/static`, runtime dependencies declared in `package.json`, CLI, LICENSE and OPEN_SOURCE_NOTICES.md. Development output, caches, secrets and source maps must not be shipped. The dependencies themselves are installed by npm and are not bundled into the tarball.
 
 Install the tarball into a separate temporary directory with production dependencies only. Verify both `--help` commands and start the packaged server on an unused loopback port with `--no-open`. Verify the page and manifest, then stop it. Use an empty `PI_CODING_AGENT_DIR` for this check; do not expose personal sessions.
 

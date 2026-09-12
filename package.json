@@ -32,7 +32,8 @@
     "next.config.ts",
     "README.md",
     "README.zh-CN.md",
-    "LICENSE"
+    "LICENSE",
+    "OPEN_SOURCE_NOTICES.md"
   ],
   "scripts": {
     "postinstall": "node bin/prepare-terminal.js",
