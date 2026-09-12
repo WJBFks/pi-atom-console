@@ -38,8 +38,8 @@ pi-web-space
 需要 Node.js 22.19.0 或更高版本。从本仓库源码运行：
 
 ```bash
-git clone https://github.com/WJBFks/pi-web-space.git
-cd pi-web-space
+git clone https://github.com/WJBFks/pi-atom-web.git
+cd pi-atom-web
 npm ci
 npm run dev
 ```

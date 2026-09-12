@@ -478,7 +478,7 @@ export function SettingsPanel({ soundEnabled, onSoundToggle, systemContent, tool
             <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 22, fontWeight: 700 }}><PiLogo />Pi Web Space</div>
             <p style={{ color: "var(--text-muted)" }}>{t("settings.aboutDescription")}</p>
             <div>Web v{process.env.NEXT_PUBLIC_APP_VERSION ?? "0.0.0"} · Pi v{process.env.NEXT_PUBLIC_PI_VERSION ?? "0.0.0"}</div>
-            <a href="https://github.com/WJBFks/pi-web-space" target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)", overflowWrap: "anywhere" }}>GitHub ↗ · WJBFks/pi-web-space</a>
+            <a href="https://github.com/WJBFks/pi-atom-web" target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)", overflowWrap: "anywhere" }}>GitHub ↗ · WJBFks/pi-atom-web</a>
             <p style={{ color: "var(--text-muted)", fontSize: 13 }}>{t("settings.aboutUpstream")} <a href="https://github.com/agegr/pi-web" target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)" }}>agegr/pi-web</a> · MIT</p>
           </div>)}
         </main>

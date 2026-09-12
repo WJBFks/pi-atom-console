@@ -2,13 +2,13 @@
   "name": "@wjbfks/pi-web-space",
   "version": "0.1.9",
   "description": "Pi Web Space — a browser workspace for the pi coding agent",
-  "homepage": "https://github.com/WJBFks/pi-web-space#readme",
+  "homepage": "https://github.com/WJBFks/pi-atom-web#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/WJBFks/pi-web-space.git"
+    "url": "git+https://github.com/WJBFks/pi-atom-web.git"
   },
   "bugs": {
-    "url": "https://github.com/WJBFks/pi-web-space/issues"
+    "url": "https://github.com/WJBFks/pi-atom-web/issues"
   },
   "license": "MIT",
   "engines": {

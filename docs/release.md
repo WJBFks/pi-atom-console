@@ -1,7 +1,7 @@
 # Publishing Pi Web Space
 
 - npm: `@wjbfks/pi-web-space`, public, maintained by npm user `wjbfks`.
-- Source: https://github.com/WJBFks/pi-web-space
+- Source: https://github.com/WJBFks/pi-atom-web
 - Commands: `pws` and `pi-web-space`; default port `40141`.
 - First package version: `0.1.9`, the fork's independent release version.
 - Retain the upstream MIT license and copyright notice. Compatibility keys beginning with `pi-web:` or `@agegr/pi-web/session-liveness` are not package identities and must not be renamed.
@@ -46,6 +46,6 @@ Complete npm's authentication / 2FA prompts. Publish the exact reviewed tarball,
 npm view @wjbfks/pi-web-space@0.1.9 version dist.integrity --registry=https://registry.npmjs.org/
 ```
 
-Remove the “first publication pending” note from the READMEs. Create release notes for this fork and a new, unused Git tag (for example `pws-v0.1.9`, avoiding inherited upstream tags), then publish a GitHub Release in `WJBFks/pi-web-space`. Never overwrite an upstream tag or reuse an already published npm version.
+Remove the “first publication pending” note from the READMEs. Create release notes for this fork and a new, unused Git tag (for example `pws-v0.1.9`, avoiding inherited upstream tags), then publish a GitHub Release in `WJBFks/pi-atom-web`. Never overwrite an upstream tag or reuse an already published npm version.
 
 For subsequent releases, explicitly select and update the version in `package.json` and `package-lock.json`, commit it, and repeat preparation in a fresh checkout.

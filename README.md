@@ -38,8 +38,8 @@ pi-web-space
 Requires Node.js 22.19.0 or newer. Run this fork from source:
 
 ```bash
-git clone https://github.com/WJBFks/pi-web-space.git
-cd pi-web-space
+git clone https://github.com/WJBFks/pi-atom-web.git
+cd pi-atom-web
 npm ci
 npm run dev
 ```
